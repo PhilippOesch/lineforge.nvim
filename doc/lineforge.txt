@@ -1,18 +1,17 @@
 *lineforge* Statusline builder
 
-MIT License Copyright (c) 2025 Philipp Oeschger
+MIT License Copyright (c) 2026 Philipp Oeschger
 
 A lightweight, extensible statusline builder for Neovim.
 
 # Features ~
 - Simple fluent builder API for constructing statuslines.
 - Pre-built segments for common statusline elements.
-- Automatic highlight group creation and caching.
 - Customizable context for fetching editor state.
 - Zero dependencies; optional `nvim-web-devicons` support.
 
 # Dependencies ~
-- Neovim >= 0.8.0
+- Neovim >= 0.10.0
 
 Suggested dependencies (provide extra functionality, will work without them):
 - `nvim-tree/nvim-web-devicons` for file icons in |lineforge-segments-file_icon|.
@@ -50,15 +49,15 @@ Usage ~
 >lua
   require('lineforge').setup({
     statusline = function(bld)
-      local s = require('lineforge').segments
+      local segments = require('lineforge').segments
       bld
         :section(function(b)
-          s.mode.add(b)
+          segments.mode.add(b)
           b:add_space(" ", 2)
-          s.filename.add(b)
+          segments.filename.add(b)
         end)
         :section(function(b)
-          s.ruler.add(b)
+          segments.ruler.add(b)
         end)
     end,
   })
@@ -250,6 +249,7 @@ Class ~
 {lineforge.EditorContext}
 Fields ~
 {get_mode} `(fun(): string)` Current Vim mode.
+{get_filetype} `(fun(): string)` Current filetype.
 {get_git_branch} `(fun(): string?)` Git branch name or `nil`.
 {get_git_status} `(fun(): {head?: string, added?: integer, removed?: integer, changed?: integer}?)` Git diff stats or `nil`.
 {get_lsp_client_names} `(fun(): string[])` Names of attached LSP clients.
@@ -375,6 +375,13 @@ Automatically colors the text using the mode's associated highlight group.
 Filename segment
 
 Displays the current buffer filename (relative to the working directory).
+
+------------------------------------------------------------------------------
+Class ~
+{lineforge.filename.opts}
+Fields ~
+{hl} `(optional)` `(table|function|string)`
+{ignore_filetypes} `(optional)` `(string[])`
 
 
 ==============================================================================
