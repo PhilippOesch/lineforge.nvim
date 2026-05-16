@@ -7,6 +7,7 @@
 ---@tag lineforge.EditorContext
 ---@class lineforge.EditorContext
 ---@field get_mode fun(): string Current Vim mode.
+---@field get_filetype fun(): string Current filetype.
 ---@field get_git_branch fun(): string? Git branch name or `nil`.
 ---@field get_git_status fun(): {head?: string, added?: integer, removed?: integer, changed?: integer}? Git diff stats or `nil`.
 ---@field get_lsp_client_names fun(): string[] Names of attached LSP clients.
@@ -30,6 +31,7 @@ function M.default()
   local highlight = require("lineforge.highlight")
   local web_icons_available, web_icons = pcall(require, "nvim-web-devicons")
 
+
   return {
     get_mode = function(_)
       return vim.fn.mode(1)
@@ -43,6 +45,10 @@ function M.default()
         return vim.b.gitsigns_head
       end
       return nil
+    end,
+
+    get_filetype = function(_)
+      return vim.bo.filetype
     end,
 
     get_git_status = function(_)

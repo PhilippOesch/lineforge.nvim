@@ -93,11 +93,6 @@ end
 
 T["segments"]["filename - expected vim api functions are called expected times"] = function()
   local result = child.lua([[
-		local res = {
-			nvim_buf_get_name_called = 0,
-			fnamemodify = 0
-		}
-
 		local builder = require('lineforge.builder')
 		local filename = require('lineforge.segments.filename')
 		local b = builder.new()
@@ -108,7 +103,43 @@ T["segments"]["filename - expected vim api functions are called expected times"]
 		filename.add(b, {hl = {fg = 'fg'}})
 		return b:build()
 	]])
-  MiniTest.expect.equality(result, '%#noBg_fg#someFileName%*')
+  MiniTest.expect.equality(result, "%#noBg_fg#someFileName%*")
+end
+
+T["segments"]["filename - should not add filename if filetype is ignored"] = function()
+  local result = child.lua([[
+		local builder = require('lineforge.builder')
+		local filename = require('lineforge.segments.filename')
+		local b = builder.new()
+		b.ctx.get_filetype = function()
+		    return 'ignored'
+		end
+		b.ctx.get_filename = function()
+		    return 'someFileName'
+		end
+
+		filename.add(b, {ignore_filetypes = {'ignored'}})
+		return b:build()
+	]])
+  MiniTest.expect.equality(result, "")
+end
+
+T["segments"]["filename - should add filename if filetype is not ignored"] = function()
+  local result = child.lua([[
+		local builder = require('lineforge.builder')
+		local filename = require('lineforge.segments.filename')
+		local b = builder.new()
+		b.ctx.get_filetype = function()
+		    return 'not_ignored'
+		end
+		b.ctx.get_filename = function()
+		    return 'someFileName'
+		end
+
+		filename.add(b, {ignore_filetypes = {'ignored'}})
+		return b:build()
+	]])
+  MiniTest.expect.equality(result, "someFileName")
 end
 
 T["segments"]["processed highlight"] = function()
