@@ -22,11 +22,8 @@ jobs:
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          release-type: simple
-          versioning-strategy: default
-          package-name: lineforge.nvim
-          bump-minor-pre-major: true
-          bump-patch-for-minor-pre-major: true
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
 
   create-artifact:
     name: Create Release Artifact
