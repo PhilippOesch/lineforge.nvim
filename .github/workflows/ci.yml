@@ -54,7 +54,7 @@ jobs:
       - name: Generate docs
         run: make gen_docs
       - name: Commit changes
-        if: ${{ github.ref == github.event.pull_request.head.ref }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMMIT_MSG: |
