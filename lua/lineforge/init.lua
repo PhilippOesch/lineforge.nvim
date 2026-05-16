@@ -11,7 +11,7 @@
 --- - Zero dependencies; optional `nvim-web-devicons` support.
 ---
 --- # Dependencies ~
---- - Neovim >= 0.8.0
+--- - Neovim >= 0.10.0
 ---
 --- Suggested dependencies (provide extra functionality, will work without them):
 --- - `nvim-tree/nvim-web-devicons` for file icons in |lineforge-segments-file_icon|.
@@ -53,7 +53,7 @@ local statusline_builder
 ---       bld
 ---         :section(function(b)
 ---           segments.mode.add(b)
----           segments:add_space(" ", 2)
+---           b:add_space(" ", 2)
 ---           segments.filename.add(b)
 ---         end)
 ---         :section(function(b)
