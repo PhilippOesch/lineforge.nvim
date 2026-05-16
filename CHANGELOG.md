@@ -6,5 +6,3 @@
 ### Features
 
 * release plugin ([a46c499](https://github.com/PhilippOesch/lineforge.nvim/commit/a46c4991f32d78abf52b56e9642b112383788393))
-
-## Changelog
