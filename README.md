@@ -16,7 +16,7 @@ A lightweight, extensible statusline builder for Neovim.
 
 ```lua
 vim.pack.add({
-  { src = "https://github.com/yourusername/lineforge.nvim" },
+  { src = "https://github.com/PhilippOesch/lineforge.nvim" },
 })
 ```
 
@@ -24,10 +24,10 @@ vim.pack.add({
 
 ```lua
 -- lazy.nvim
-{ "yourusername/lineforge.nvim" }
+{ "PhilippOesch/lineforge.nvim" }
 
 -- packer.nvim
-use { "yourusername/lineforge.nvim" }
+use { "PhilippOesch/lineforge.nvim" }
 ```
 
 ## Quick Start
