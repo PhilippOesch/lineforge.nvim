@@ -1,6 +1,4 @@
----
---- !!!This code is mostly copied from heirline.!!!: https://github.com/rebelot/heirline.nvim/blob/master/lua/heirline/highlights.lua
----
+-- !!!This code is mostly copied from heirline.!!!: https://github.com/rebelot/heirline.nvim/blob/master/lua/heirline/highlights.lua
 
 local M = {}
 local str_format = string.format
@@ -11,24 +9,42 @@ local defined_highlights = {}
 
 local loaded_colors = {}
 
+--- Reset cached highlight groups
+---
+--- Clears the internal cache so that subsequent calls to |eval_hl| will
+--- recreate highlight groups.
 function M.reset_highlights()
 	defined_highlights = {}
 end
 
+--- Load named colors
+---
+--- Registers color names that can be used in highlight tables instead of
+--- hex strings. For example, `load_colors({ myred = "#FF0000" })` allows
+--- using `{ fg = "myred" }`.
+---
+---@param colors table<string,string> Map of color name to hex value.
 function M.load_colors(colors)
 	for c, v in pairs(colors) do
 		loaded_colors[c] = v
 	end
 end
 
+--- Clear loaded named colors
 function M.clear_colors()
 	loaded_colors = {}
 end
 
+--- Get loaded named colors
+---
+---@return table<string,string> Copy of the loaded colors table.
 function M.get_loaded_colors()
 	return vim.tbl_extend("force", loaded_colors, {})
 end
 
+--- Get cached highlight group names
+---
+---@return table<string,boolean> Copy of the cached highlight name table.
 function M.get_highlights()
 	return vim.tbl_extend("force", defined_highlights, {})
 end
@@ -94,6 +110,14 @@ local function normalize_hl(hl)
 	return fixed_hl
 end
 
+--- Evaluate a highlight definition
+---
+--- Normalizes the highlight table, creates a named highlight group if it
+--- does not already exist, and returns the group name for use in statusline
+--- format strings (`%#GroupName#`).
+---
+---@param hl table Highlight definition table with keys like `fg`, `bg`, `bold`, etc.
+---@return string Name of the created or cached highlight group.
 function M.eval_hl(hl)
 	assert(type(hl) == "table")
 	if vim.tbl_isempty(hl) or hl[true] then
@@ -109,6 +133,10 @@ function M.eval_hl(hl)
 	return hl_name
 end
 
+--- Get a built-in highlight group definition
+---
+---@param name string Highlight group name.
+---@return table Highlight definition table.
 function M.get_highlight(name)
 	return vim.api.nvim_get_hl(0, { name = name, link = false, create = false })
 end

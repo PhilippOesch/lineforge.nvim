@@ -1,17 +1,30 @@
+--- Editor context
+---
+--- A context is a table of functions that provide editor state to segments.
+--- You can override any field via `setup({ context = { ... } })`.
+---
+---@toc_entry EditorContext
+---@tag lineforge.EditorContext
 ---@class lineforge.EditorContext
----@field get_mode fun(): string
----@field get_git_branch fun(): string?
----@field get_git_status fun(): {head?: string, added?: integer, removed?: integer, changed?: integer}?
----@field get_lsp_client_names fun(): string[]
----@field get_file_icon fun(filename: string, extension: string): (string?, string?)
----@field get_filename fun(): string
----@field get_fileformat fun(): string?
----@field get_cursor_line fun(): integer
----@field get_buffer_line_count fun(): integer
----@field get_highlight fun(name: string): table
+---@field get_mode fun(): string Current Vim mode.
+---@field get_git_branch fun(): string? Git branch name or `nil`.
+---@field get_git_status fun(): {head?: string, added?: integer, removed?: integer, changed?: integer}? Git diff stats or `nil`.
+---@field get_lsp_client_names fun(): string[] Names of attached LSP clients.
+---@field get_file_icon fun(filename: string, extension: string): (string?, string?) Icon and color for a file.
+---@field get_filename fun(): string Current buffer filename.
+---@field get_fileformat fun(): string? File format (`unix`, `dos`, `mac`).
+---@field get_cursor_line fun(): integer Current cursor line number.
+---@field get_buffer_line_count fun(): integer Total lines in current buffer.
+---@field get_highlight fun(name: string): table Resolve a highlight group to its definition table.
 
 local M = {}
 
+--- Default editor context
+---
+--- Provides sensible defaults using built-in Neovim APIs. Git data falls
+--- back on `gitsigns.nvim` buffer variables. File icons require
+--- `nvim-web-devicons`.
+---
 ---@return lineforge.EditorContext
 function M.default()
 	local highlight = require("lineforge.highlight")

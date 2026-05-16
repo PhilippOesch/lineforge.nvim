@@ -1,5 +1,14 @@
+--- Git status segment
+---
+--- Displays a summary of Git diff stats: added (`+n`), removed (`-n`),
+--- and changed (`~n`). Hidden when there are no changes or outside a Git
+--- repository. Uses `gitsigns.nvim` data if available.
+---
+---@toc_entry Git status
+---@tag lineforge-segments-git_status
 local M = {}
 
+---@private
 ---@param bld lineforge.Builder
 ---@param hl? lineforge.hl_val
 function M.add(bld, hl)

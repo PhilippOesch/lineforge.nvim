@@ -1,5 +1,13 @@
+--- File icon segment
+---
+--- Displays an icon for the current filetype. Requires `nvim-web-devicons`.
+--- The icon is colored using the color provided by the icon library.
+---
+---@toc_entry File icon
+---@tag lineforge-segments-file_icon
 local M = {}
 
+---@private
 ---@param bld lineforge.Builder
 ---@param hl? lineforge.hl_val
 function M.add(bld)

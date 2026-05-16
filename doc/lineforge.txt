@@ -1,0 +1,437 @@
+*lineforge* Statusline builder
+
+MIT License Copyright (c) 2025 Philipp Oeschger
+
+A lightweight, extensible statusline builder for Neovim.
+
+# Features ~
+- Simple fluent builder API for constructing statuslines.
+- Pre-built segments for common statusline elements.
+- Automatic highlight group creation and caching.
+- Customizable context for fetching editor state.
+- Zero dependencies; optional `nvim-web-devicons` support.
+
+# Dependencies ~
+- Neovim >= 0.8.0
+
+Suggested dependencies (provide extra functionality, will work without them):
+- `nvim-tree/nvim-web-devicons` for file icons in |lineforge-segments-file_icon|.
+- `lewis6991/gitsigns.nvim` for git branch and status in
+  |lineforge-segments-git_branch| and |lineforge-segments-git_status|.
+
+# Setup ~
+
+This module needs a setup with `require('lineforge').setup({})`
+(replace `{}` with your config table).
+
+See |lineforge.config| for config structure and default values.
+
+------------------------------------------------------------------------------
+Module config
+
+Class ~
+{lineforge.config}
+Fields ~
+{statusline} `(optional)` `(fun(builder: Builder))` Function that receives a |Builder| to construct the statusline.
+{context} `(optional)` `(EditorContext)` Overrides for the default |EditorContext|.
+
+------------------------------------------------------------------------------
+                                                                     *M.setup()*
+                               `M.setup`({opts})
+Module setup
+
+Initializes the statusline. The `{statusline}` callback receives a fresh
+|Builder| where you compose segments and layout.
+
+Parameters ~
+{opts} `(lineforge.config)` Module config table. See |lineforge.config|.
+
+Usage ~
+>lua
+  require('lineforge').setup({
+    statusline = function(bld)
+      local s = require('lineforge').segments
+      bld
+        :section(function(b)
+          s.mode.add(b)
+          b:add_space(" ", 2)
+          s.filename.add(b)
+        end)
+        :section(function(b)
+          s.ruler.add(b)
+        end)
+    end,
+  })
+<
+------------------------------------------------------------------------------
+                                                           *M.eval_statusline()*
+                             `M.eval_statusline`()
+Evaluate the current statusline string.
+
+This is called automatically via the `statusline` option set during setup.
+
+Return ~
+`(string)` Statusline string.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                             *lineforge.Builder*
+Statusline builder
+
+The builder uses a fluent API: every method returns the builder itself,
+allowing chained calls. Content is accumulated as a sequence of strings and
+functions that get evaluated on every statusline redraw.
+
+Highlights can be:
+- A table of highlight attributes: `{ fg = "#FF0000", bg = "#000000", bold = true }`
+- A function returning a highlight table or string.
+- A string referencing an existing highlight group name.
+
+Class ~
+{lineforge.Builder}
+Fields ~
+{statusline} `((lineforge.eval_fun|string)[])`
+{hl_stack} `(lineforge.hl_val[])`
+{ctx} `(lineforge.EditorContext)`
+{new} `(fun(hl?: lineforge.hl_val, ctx?: lineforge.EditorContext): lineforge.Builder)`
+{add} `(fun(self: lineforge.Builder, fn: lineforge.eval_fun, hl?: lineforge.hl_val): lineforge.Builder)`
+{section} `(fun(self: lineforge.Builder, hl?: lineforge.hl_val): lineforge.Builder)`
+{add_align} `(fun(self: lineforge.Builder): lineforge.Builder)`
+{add_space} `(fun(self: lineforge.Builder, chars?: string, len?: integer): lineforge.Builder)`
+{wrap} `(fun(self: lineforge.Builder, left: string, right: string, fn: lineforge.eval_fun_builder, hl?: lineforge.hl_val): lineforge.Builder)`
+{when} `(fun(self: lineforge.Builder, fn: lineforge.eval_fun_builder, predicate: lineforge.condition_fun): lineforge.Builder)`
+{push_style} `(fun(self: lineforge.Builder, hl: lineforge.hl_val): lineforge.Builder)`
+{pop_style} `(fun(self: lineforge.Builder): lineforge.Builder)`
+{build} `(fun(self: lineforge.Builder): string)`
+
+------------------------------------------------------------------------------
+                                                                 *Builder.new()*
+                           `Builder.new`({hl}, {ctx})
+Create a new builder
+
+Parameters ~
+{hl} `(optional)` `(table|function|string)` Initial highlight pushed onto the stack.
+{ctx} `(optional)` `(lineforge.EditorContext)` Context providing editor state.
+Return ~
+`(lineforge.Builder)`
+
+------------------------------------------------------------------------------
+                                                          *Builder:push_style()*
+                           `Builder:push_style`({hl})
+Parameters ~
+{hl} `(optional)` `(table|function|string)`
+Push a highlight onto the stack
+
+When a table highlight is pushed, it merges with the current stack top.
+When a function is pushed, it lazily evaluates and merges on use.
+
+{hl} `(table|function|string)` Highlight value to push.
+Return ~
+`(lineforge.Builder)`
+
+------------------------------------------------------------------------------
+                                                           *Builder:pop_style()*
+                             `Builder:pop_style`()
+Pop the last highlight from the stack
+
+Return ~
+`(lineforge.Builder)`
+
+------------------------------------------------------------------------------
+                                                                 *Builder:add()*
+                           `Builder:add`({fn}, {hl})
+Add content to the statusline
+
+Adds a string or a function that returns a string. When `{hl}` is
+provided, the content is wrapped in the corresponding highlight group.
+
+Parameters ~
+{fn} `(fun():string)` Function that returns a string evaluated on redraw.|string String or function returning a string.
+{hl} `(optional)` `(table|function|string)` Optional highlight for this item.
+Return ~
+`(lineforge.Builder)`
+
+------------------------------------------------------------------------------
+                                                             *Builder:section()*
+                         `Builder:section`({fn}, {hl})
+Create a new section
+
+Wraps `{fn}` inside an alignment block. If `{hl}` is provided, the
+entire section inherits that highlight via `push_style` / `pop_style`.
+Inserts `%=` before the section unless it is the first block.
+
+Parameters ~
+{fn} `(fun(bld: lineforge.Builder))` Builder callback used inside methods like `section` and `when`. Builder callback defining section content.
+{hl} `(optional)` `(table|function|string)` Optional highlight applied to the whole section.
+Return ~
+`(lineforge.Builder)`
+
+------------------------------------------------------------------------------
+                                                                *Builder:when()*
+                       `Builder:when`({fn}, {predicate})
+Conditionally add content
+
+Evaluates `{predicate}` on every redraw. If it returns `true`, the
+content produced by `{fn}` is included; otherwise it is omitted.
+
+Parameters ~
+{fn} `(fun(bld: lineforge.Builder))` Builder callback used inside methods like `section` and `when`. Builder callback defining conditional content.
+{predicate} `(fun():boolean)` Predicate function returning `true` to show conditional content. Function returning `true` to include content.
+Return ~
+`(lineforge.Builder)`
+
+------------------------------------------------------------------------------
+                                                           *Builder:add_align()*
+                             `Builder:add_align`()
+Add an alignment separator
+
+Inserts `%=` which separates left-aligned and right-aligned content.
+
+Return ~
+`(lineforge.Builder)`
+
+------------------------------------------------------------------------------
+                                                           *Builder:add_space()*
+                      `Builder:add_space`({chars}, {len})
+Add spacing
+
+Parameters ~
+{chars} `(optional)` `(string)` Characters to repeat. Default: `" "`.
+{len} `(optional)` `(integer)` Number of repetitions. Default: `1`.
+Return ~
+`(lineforge.Builder)`
+
+------------------------------------------------------------------------------
+                                                                *Builder:wrap()*
+                  `Builder:wrap`({left}, {right}, {fn}, {hl})
+Wrap content with delimiters
+
+Adds `{left}`, runs `{fn}` to add inner content, then adds `{right}`.
+When `{hl}` is provided, the delimiters and inner content use that
+highlight. For table highlights with a `fg`, the inner background is
+automatically set to that foreground color for a "pill" effect.
+
+Parameters ~
+{left} `(string)` Left delimiter string.
+{right} `(string)` Right delimiter string.
+{fn} `(fun(bld: lineforge.Builder))` Builder callback used inside methods like `section` and `when`. Builder callback for inner content.
+{hl} `(optional)` `(table|function|string)` Optional highlight for the wrapped block.
+Return ~
+`(lineforge.Builder)`
+
+------------------------------------------------------------------------------
+                                                               *Builder:build()*
+                               `Builder:build`()
+Build the statusline string
+
+Evaluates all accumulated strings and functions to produce the final
+statusline value.
+
+Return ~
+`(string)` Final statusline string.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                       *lineforge.EditorContext*
+Editor context
+
+A context is a table of functions that provide editor state to segments.
+You can override any field via `setup({ context = { ... } })`.
+
+Class ~
+{lineforge.EditorContext}
+Fields ~
+{get_mode} `(fun(): string)` Current Vim mode.
+{get_git_branch} `(fun(): string?)` Git branch name or `nil`.
+{get_git_status} `(fun(): {head?: string, added?: integer, removed?: integer, changed?: integer}?)` Git diff stats or `nil`.
+{get_lsp_client_names} `(fun(): string[])` Names of attached LSP clients.
+{get_file_icon} `(fun(filename: string, extension: string): (string?, string?))` Icon and color for a file.
+{get_filename} `(fun(): string)` Current buffer filename.
+{get_fileformat} `(fun(): string?)` File format (`unix`, `dos`, `mac`).
+{get_cursor_line} `(fun(): integer)` Current cursor line number.
+{get_buffer_line_count} `(fun(): integer)` Total lines in current buffer.
+{get_highlight} `(fun(name: string): table)` Resolve a highlight group to its definition table.
+
+------------------------------------------------------------------------------
+                                                                   *M.default()*
+                                 `M.default`()
+Default editor context
+
+Provides sensible defaults using built-in Neovim APIs. Git data falls
+back on `gitsigns.nvim` buffer variables. File icons require
+`nvim-web-devicons`.
+
+Return ~
+`(lineforge.EditorContext)`
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                          *M.reset_highlights()*
+                             `M.reset_highlights`()
+Reset cached highlight groups
+
+Clears the internal cache so that subsequent calls to |eval_hl| will
+recreate highlight groups.
+
+------------------------------------------------------------------------------
+                                                               *M.load_colors()*
+                           `M.load_colors`({colors})
+Load named colors
+
+Registers color names that can be used in highlight tables instead of
+hex strings. For example, `load_colors({ myred = "#FF0000" })` allows
+using `{ fg = "myred" }`.
+
+Parameters ~
+{colors} `(table<string,string>)` Map of color name to hex value.
+
+------------------------------------------------------------------------------
+                                                              *M.clear_colors()*
+                               `M.clear_colors`()
+Clear loaded named colors
+
+------------------------------------------------------------------------------
+                                                         *M.get_loaded_colors()*
+                            `M.get_loaded_colors`()
+Get loaded named colors
+
+Return ~
+`(table<string,string>)` Copy of the loaded colors table.
+
+------------------------------------------------------------------------------
+                                                            *M.get_highlights()*
+                              `M.get_highlights`()
+Get cached highlight group names
+
+Return ~
+`(table<string,boolean>)` Copy of the cached highlight name table.
+
+------------------------------------------------------------------------------
+                                                                   *M.eval_hl()*
+                               `M.eval_hl`({hl})
+Evaluate a highlight definition
+
+Normalizes the highlight table, creates a named highlight group if it
+does not already exist, and returns the group name for use in statusline
+format strings (`%#GroupName#`).
+
+Parameters ~
+{hl} `(table)` Highlight definition table with keys like `fg`, `bg`, `bold`, etc.
+Return ~
+`(string)` Name of the created or cached highlight group.
+
+------------------------------------------------------------------------------
+                                                             *M.get_highlight()*
+                           `M.get_highlight`({name})
+Get a built-in highlight group definition
+
+Parameters ~
+{name} `(string)` Highlight group name.
+Return ~
+`(table)` Highlight definition table.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                            *lineforge-segments*
+Built-in segments
+
+Pre-built statusline segments provided by LineForge. Each segment
+exposes an `add(builder, highlight?)` function.
+
+Available segments:
+- `mode` — |lineforge-segments-mode|
+- `filename` — |lineforge-segments-filename|
+- `file_icon` — |lineforge-segments-file_icon|
+- `git_branch` — |lineforge-segments-git_branch|
+- `git_status` — |lineforge-segments-git_status|
+- `fileformat` — |lineforge-segments-fileformat|
+- `lsp_attached_info` — |lineforge-segments-lsp_attached_info|
+- `ruler` — |lineforge-segments-ruler|
+- `scrollbar` — |lineforge-segments-scrollbar|
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                       *lineforge-segments-mode*
+Mode segment
+
+Displays the current Vim mode abbreviation (e.g. `N`, `I`, `V`).
+Automatically colors the text using the mode's associated highlight group.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                   *lineforge-segments-filename*
+Filename segment
+
+Displays the current buffer filename (relative to the working directory).
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                  *lineforge-segments-file_icon*
+File icon segment
+
+Displays an icon for the current filetype. Requires `nvim-web-devicons`.
+The icon is colored using the color provided by the icon library.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                 *lineforge-segments-git_branch*
+Git branch segment
+
+Displays the current Git branch name prefixed with a branch icon.
+Hidden when not in a Git repository. Uses `gitsigns.nvim` data if available.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                 *lineforge-segments-git_status*
+Git status segment
+
+Displays a summary of Git diff stats: added (`+n`), removed (`-n`),
+and changed (`~n`). Hidden when there are no changes or outside a Git
+repository. Uses `gitsigns.nvim` data if available.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                 *lineforge-segments-fileformat*
+Fileformat segment
+
+Displays the current file format (`unix`, `dos`, `mac`) prefixed
+with a format icon. Hidden when the format is unavailable.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                          *lineforge-segments-lsp_attached_info*
+LSP attached info segment
+
+Displays the names of LSP clients attached to the current buffer,
+prefixed with an LSP icon. Hidden when no LSP clients are attached.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                      *lineforge-segments-ruler*
+Ruler segment
+
+Displays the current cursor position in the form `line/total:col percent`.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                  *lineforge-segments-scrollbar*
+Scrollbar segment
+
+Displays a visual scrollbar indicator using Unicode block characters.
+The indicator changes based on the current cursor position in the buffer.
+
+
+ vim:tw=78:ts=8:noet:ft=help:norl:

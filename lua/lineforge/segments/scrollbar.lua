@@ -1,7 +1,15 @@
+--- Scrollbar segment
+---
+--- Displays a visual scrollbar indicator using Unicode block characters.
+--- The indicator changes based on the current cursor position in the buffer.
+---
+---@toc_entry Scrollbar
+---@tag lineforge-segments-scrollbar
 local M = {}
 
 local scroll_bar = { " ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" }
 
+---@private
 ---@param bld lineforge.Builder
 ---@param hl? lineforge.hl_val
 function M.add(bld, hl)

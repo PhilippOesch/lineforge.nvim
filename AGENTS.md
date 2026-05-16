@@ -8,6 +8,7 @@ Neovim plugin. Dependencies vendored in `deps/`.
 |------|---------|
 | Run all tests | `nvim --headless --noplugin -u scripts/minimal_init.lua -c "lua MiniTest.run()"` |
 | Run single test file | `nvim --headless --noplugin -u scripts/minimal_init.lua -c "lua MiniTest.run_file('path/to/test_file.lua')"` |
+| Generate docs | `nvim --headless --noplugin -u scripts/minimal_init.lua -c "luafile scripts/generate_docs.lua" -c "qa"` |
 
 
 ## Key Conventions

@@ -4,6 +4,19 @@ local context = require("lineforge.context")
 local Builder = {}
 Builder.__index = Builder
 
+--- Statusline builder
+---
+--- The builder uses a fluent API: every method returns the builder itself,
+--- allowing chained calls. Content is accumulated as a sequence of strings and
+--- functions that get evaluated on every statusline redraw.
+---
+--- Highlights can be:
+--- - A table of highlight attributes: `{ fg = "#FF0000", bg = "#000000", bold = true }`
+--- - A function returning a highlight table or string.
+--- - A string referencing an existing highlight group name.
+---
+---@toc_entry Builder
+---@tag lineforge.Builder
 ---@class lineforge.Builder
 ---@field statusline (lineforge.eval_fun|string)[]
 ---@field hl_stack lineforge.hl_val[]
@@ -19,13 +32,15 @@ Builder.__index = Builder
 ---@field pop_style fun(self: lineforge.Builder): lineforge.Builder
 ---@field build fun(self: lineforge.Builder): string
 
----@alias lineforge.eval_fun fun():string
----@alias lineforge.eval_fun_builder fun(bld: lineforge.Builder)
----@alias lineforge.condition_fun fun():boolean
----@alias lineforge.hl_val table|function
+---@alias lineforge.eval_fun fun():string Function that returns a string evaluated on redraw.
+---@alias lineforge.eval_fun_builder fun(bld: lineforge.Builder) Builder callback used inside methods like `section` and `when`.
+---@alias lineforge.condition_fun fun():boolean Predicate function returning `true` to show conditional content.
+---@alias lineforge.hl_val table|function|string
 
----@param hl? lineforge.hl_val
----@param ctx? lineforge.EditorContext
+--- Create a new builder
+---
+---@param hl? lineforge.hl_val Initial highlight pushed onto the stack.
+---@param ctx? lineforge.EditorContext Context providing editor state.
 ---@return lineforge.Builder
 function Builder.new(hl, ctx)
 	local self = setmetatable({}, Builder)
@@ -64,6 +79,12 @@ local function resolve_dynamic_hl(hl)
 end
 
 ---@param hl? lineforge.hl_val
+--- Push a highlight onto the stack
+---
+--- When a table highlight is pushed, it merges with the current stack top.
+--- When a function is pushed, it lazily evaluates and merges on use.
+---
+---@param hl lineforge.hl_val Highlight value to push.
 ---@return lineforge.Builder
 function Builder:push_style(hl)
 	local hl_fn = function()
@@ -99,6 +120,8 @@ function Builder:push_style(hl)
 	return self
 end
 
+--- Pop the last highlight from the stack
+---
 ---@return lineforge.Builder
 function Builder:pop_style()
 	if #self.hl_stack > 0 then
@@ -107,9 +130,13 @@ function Builder:pop_style()
 	return self
 end
 
----add new eval function
----@param fn lineforge.eval_fun|string
----@param hl? lineforge.hl_val
+--- Add content to the statusline
+---
+--- Adds a string or a function that returns a string. When `{hl}` is
+--- provided, the content is wrapped in the corresponding highlight group.
+---
+---@param fn lineforge.eval_fun|string String or function returning a string.
+---@param hl? lineforge.hl_val Optional highlight for this item.
 ---@return lineforge.Builder
 function Builder:add(fn, hl)
 	local stack_hl = nil
@@ -144,9 +171,14 @@ function Builder:add(fn, hl)
 	return self
 end
 
----add new eval function
----@param fn lineforge.eval_fun_builder
----@param hl? lineforge.hl_val
+--- Create a new section
+---
+--- Wraps `{fn}` inside an alignment block. If `{hl}` is provided, the
+--- entire section inherits that highlight via `push_style` / `pop_style`.
+--- Inserts `%=` before the section unless it is the first block.
+---
+---@param fn lineforge.eval_fun_builder Builder callback defining section content.
+---@param hl? lineforge.hl_val Optional highlight applied to the whole section.
 ---@return lineforge.Builder
 function Builder:section(fn, hl)
 	if #self.statusline > 0 then
@@ -162,8 +194,13 @@ function Builder:section(fn, hl)
 	return self
 end
 
----@param fn lineforge.eval_fun_builder
----@param predicate lineforge.condition_fun
+--- Conditionally add content
+---
+--- Evaluates `{predicate}` on every redraw. If it returns `true`, the
+--- content produced by `{fn}` is included; otherwise it is omitted.
+---
+---@param fn lineforge.eval_fun_builder Builder callback defining conditional content.
+---@param predicate lineforge.condition_fun Function returning `true` to include content.
 ---@return lineforge.Builder
 function Builder:when(fn, predicate)
 	local conditional_builder = Builder.new((#self.hl_stack > 0 and self.hl_stack[#self.hl_stack]) or nil, self.ctx)
@@ -177,25 +214,37 @@ function Builder:when(fn, predicate)
 	return self
 end
 
+--- Add an alignment separator
+---
+--- Inserts `%=` which separates left-aligned and right-aligned content.
+---
 ---@return lineforge.Builder
 function Builder:add_align()
 	self:add("%=")
 	return self
 end
 
----comment
----@param chars? string
----@param len? integer
+--- Add spacing
+---
+---@param chars? string Characters to repeat. Default: `" "`.
+---@param len? integer Number of repetitions. Default: `1`.
 ---@return lineforge.Builder
 function Builder:add_space(chars, len)
 	self:add(string.rep(chars or " ", len or 1))
 	return self
 end
 
----@param left string
----@param right string
----@param fn lineforge.eval_fun_builder
----@param hl? string
+--- Wrap content with delimiters
+---
+--- Adds `{left}`, runs `{fn}` to add inner content, then adds `{right}`.
+--- When `{hl}` is provided, the delimiters and inner content use that
+--- highlight. For table highlights with a `fg`, the inner background is
+--- automatically set to that foreground color for a "pill" effect.
+---
+---@param left string Left delimiter string.
+---@param right string Right delimiter string.
+---@param fn lineforge.eval_fun_builder Builder callback for inner content.
+---@param hl? lineforge.hl_val Optional highlight for the wrapped block.
 ---@return lineforge.Builder
 function Builder:wrap(left, right, fn, hl)
 	if hl then
@@ -220,7 +269,12 @@ function Builder:wrap(left, right, fn, hl)
 	return self
 end
 
----@return string
+--- Build the statusline string
+---
+--- Evaluates all accumulated strings and functions to produce the final
+--- statusline value.
+---
+---@return string Final statusline string.
 function Builder:build()
 	local res = ""
 	for _, value in ipairs(self.statusline) do

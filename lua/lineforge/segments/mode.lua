@@ -51,8 +51,16 @@ local mode_colors = {
 	t = "Error",
 }
 
+--- Mode segment
+---
+--- Displays the current Vim mode abbreviation (e.g. `N`, `I`, `V`).
+--- Automatically colors the text using the mode's associated highlight group.
+---
+---@toc_entry Mode
+---@tag lineforge-segments-mode
 local M = {}
 
+---@private
 ---@param bld lineforge.Builder
 ---@param hl? lineforge.hl_val
 function M.add(bld)
