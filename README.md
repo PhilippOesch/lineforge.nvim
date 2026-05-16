@@ -106,7 +106,7 @@ builder
   :add(string|function, hl?)          -- Add text or evaluated function
   :add_align()                         -- Add alignment separator
   :add_space(chars?, len?)             -- Add spacing
-  :section(function(builder), hl?)    -- Create a new section block
+  :section(function(builder), hl?)     -- Create a new section block (spaced to have equal space between sections)
   :wrap(left, right, fn, hl?)          -- Wrap content with delimiters
   :when(condition, function(builder))  -- Conditional content
   :push_style(hl)                      -- Push highlight onto stack
@@ -118,13 +118,12 @@ builder
 Highlights can be:
 - **Table**: `{ fg = "#FF0000", bg = "#000000", bold = true }`
 - **Function**: `function() return { fg = "#FF0000" } end`
-- **String**: Reference to an existing highlight group name
 
 Colors can be hex strings or named colors loaded via `highlight.load_colors({ myred = "#FF0000" })`.
 
 ## Credits
 
-This plugin was heavily inspired by [heirline.nvim](https://github.com/rebelot/heirline.nvim). The highlight evaluation logic in `lua/lineforge/highlight.lua` is derived from heirline's codebase.
+This plugin was heavily inspired by the modular design of [heirline.nvim](https://github.com/rebelot/heirline.nvim). This plugin is basically a re imagination of it The highlight evaluation logic in `lua/lineforge/highlight.lua` is derived from heirline's codebase.
 
 ## License
 
