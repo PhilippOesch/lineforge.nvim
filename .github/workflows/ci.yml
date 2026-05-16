@@ -2,6 +2,8 @@ name: CI
 
 on:
   pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
@@ -69,20 +71,6 @@ jobs:
           # Only commit and push if we have changes
           git diff --quiet && git diff --staged --quiet || (git commit -m "${COMMIT_MSG}"; git push origin HEAD:${GITHUB_REF})
 
-      - name: Commit changes
-        if: ${{ github.ref == 'refs/heads/master' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COMMIT_MSG: |
-            [docgen] Update docs
-            skip-checks: true
-        run: |
-          git config user.email "actions@github"
-          git config user.name "Github Actions"
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          git add README.md doc
-          # Only commit and push if we have changes
-          git diff --quiet && git diff --staged --quiet || (git commit -m "${COMMIT_MSG}"; git push origin HEAD:${GITHUB_REF})
   stylua:
     name: Stylua lint
     runs-on: ubuntu-latest
