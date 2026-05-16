@@ -31,7 +31,6 @@ function M.default()
   local highlight = require("lineforge.highlight")
   local web_icons_available, web_icons = pcall(require, "nvim-web-devicons")
 
-
   return {
     get_mode = function(_)
       return vim.fn.mode(1)
