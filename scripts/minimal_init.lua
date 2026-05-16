@@ -2,16 +2,16 @@
 vim.cmd([[let &rtp.=','.getcwd()]])
 
 -- Assumes that 'mini.nvim' is stored in 'deps/mini.nvim'
-vim.cmd('set rtp+=deps/mini.nvim')
+vim.cmd("set rtp+=deps/mini.nvim")
 
 -- Load mini.test before setup so we can reference it in config
-local MiniTest = require('mini.test')
+local MiniTest = require("mini.test")
 
 -- Set up 'mini.test' with headless-friendly reporter
 MiniTest.setup({
   collect = {
     find_files = function()
-      return vim.fn.globpath('tests', '**/test_*.lua', true, true)
+      return vim.fn.globpath("tests", "**/test_*.lua", true, true)
     end,
   },
   execute = {
