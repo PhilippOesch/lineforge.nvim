@@ -53,6 +53,7 @@ jobs:
 
       - name: Generate docs
         run: make gen_docs
+
       - name: Commit changes
         if: ${{ github.ref == github.event.pull_request.head.ref }}
         env:
