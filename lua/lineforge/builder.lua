@@ -27,7 +27,7 @@ Builder.__index = Builder
 ---@field add_align fun(self: lineforge.Builder): lineforge.Builder
 ---@field add_space fun(self: lineforge.Builder, chars?: string, len?: integer): lineforge.Builder
 ---@field wrap fun(self: lineforge.Builder, left: string, right: string, fn: lineforge.eval_fun_builder, hl?: lineforge.hl_val): lineforge.Builder
----@field when fun(self: lineforge.Builder, fn: lineforge.eval_fun_builder, predicate: lineforge.condition_fun): lineforge.Builder
+---@field when fun(self: lineforge.Builder, predicate: lineforge.condition_fun, fn: lineforge.eval_fun_builder): lineforge.Builder
 ---@field push_style fun(self: lineforge.Builder, hl: lineforge.hl_val): lineforge.Builder
 ---@field pop_style fun(self: lineforge.Builder): lineforge.Builder
 ---@field build fun(self: lineforge.Builder): string
@@ -199,10 +199,10 @@ end
 --- Evaluates `{predicate}` on every redraw. If it returns `true`, the
 --- content produced by `{fn}` is included; otherwise it is omitted.
 ---
----@param fn lineforge.eval_fun_builder Builder callback defining conditional content.
 ---@param predicate lineforge.condition_fun Function returning `true` to include content.
+---@param fn lineforge.eval_fun_builder Builder callback defining conditional content.
 ---@return lineforge.Builder
-function Builder:when(fn, predicate)
+function Builder:when(predicate, fn)
 	local conditional_builder = Builder.new((#self.hl_stack > 0 and self.hl_stack[#self.hl_stack]) or nil, self.ctx)
 	fn(conditional_builder)
 	self:add(function()

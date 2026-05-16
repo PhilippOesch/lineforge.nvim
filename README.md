@@ -108,7 +108,7 @@ builder
   :add_space(chars?, len?)             -- Add spacing
   :section(function(builder), hl?)    -- Create a new section block
   :wrap(left, right, fn, hl?)          -- Wrap content with delimiters
-  :when(function(builder), condition)  -- Conditional content
+  :when(condition, function(builder))  -- Conditional content
   :push_style(hl)                      -- Push highlight onto stack
   :pop_style()                         -- Pop highlight from stack
 ```

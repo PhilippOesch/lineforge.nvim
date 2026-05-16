@@ -250,10 +250,10 @@ end
 T["builder"]["when - string not added when condition not fulfilled"] = function()
 	local result = child.lua([[
 		local builder = require('lineforge.builder')
-		local b = builder.new():when(function(bld)
-			bld:add("abc")
-		end, function()
+		local b = builder.new():when(function()
 			return false
+		end, function(bld)
+			bld:add("abc")
 		end)
 
 		return b:build()
@@ -264,10 +264,10 @@ end
 T["builder"]["when - string added when condition fulfilled"] = function()
 	local result = child.lua([[
 		local builder = require('lineforge.builder')
-		local b = builder.new():when(function(bld)
-			bld:add("abc")
-		end, function()
+		local b = builder.new():when(function()
 			return true
+		end, function(bld)
+			bld:add("abc")
 		end)
 
 		return b:build()
@@ -280,10 +280,10 @@ T["builder"]["when - information about highights are keeped"] = function()
 		local builder = require('lineforge.builder')
 		local b = builder.new()
 		:push_style({fg='mockHl'})
-		:when(function(bld)
-			bld:add("abc")
-		end, function()
+		:when(function()
 			return true
+		end, function(bld)
+			bld:add("abc")
 		end)
 		:pop_style()
 
@@ -297,10 +297,10 @@ T["builder"]["when - information about highights are keeped and build on"] = fun
 		local builder = require('lineforge.builder')
 		local b = builder.new()
 		:push_style({fg='fg'})
-		:when(function(bld)
-			bld:add("abc", {bg = 'bg'})
-		end, function()
+		:when(function()
 			return true
+		end, function(bld)
+			bld:add("abc", {bg = 'bg'})
 		end)
 		:pop_style()
 
