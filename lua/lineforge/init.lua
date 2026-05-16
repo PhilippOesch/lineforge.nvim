@@ -1,13 +1,12 @@
 --- *lineforge* Statusline builder
 ---
---- MIT License Copyright (c) 2025 Philipp Oeschger
+--- MIT License Copyright (c) 2026 Philipp Oeschger
 ---
 --- A lightweight, extensible statusline builder for Neovim.
 ---
 --- # Features ~
 --- - Simple fluent builder API for constructing statuslines.
 --- - Pre-built segments for common statusline elements.
---- - Automatic highlight group creation and caching.
 --- - Customizable context for fetching editor state.
 --- - Zero dependencies; optional `nvim-web-devicons` support.
 ---
@@ -50,15 +49,15 @@ local statusline_builder
 ---@usage >lua
 ---   require('lineforge').setup({
 ---     statusline = function(bld)
----       local s = require('lineforge').segments
+---       local segments = require('lineforge').segments
 ---       bld
 ---         :section(function(b)
----           s.mode.add(b)
----           b:add_space(" ", 2)
----           s.filename.add(b)
+---           segments.mode.add(b)
+---           segments:add_space(" ", 2)
+---           segments.filename.add(b)
 ---         end)
 ---         :section(function(b)
----           s.ruler.add(b)
+---           segments.ruler.add(b)
 ---         end)
 ---     end,
 ---   })
