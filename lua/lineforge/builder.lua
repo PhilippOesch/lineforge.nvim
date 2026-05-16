@@ -4,29 +4,29 @@ local context = require("lineforge.context")
 local Builder = {}
 Builder.__index = Builder
 
----@class Builder
----@field statusline (eval_fun|string)[]
----@field hl_stack hl_val[]
----@field ctx EditorContext
----@field new fun(hl?: hl_val, ctx?: EditorContext): Builder
----@field add fun(self: Builder, fn: eval_fun, hl?: hl_val): Builder
----@field section fun(self: Builder, hl?: hl_val): Builder
----@field add_align fun(self: Builder): Builder
----@field add_space fun(self: Builder, chars?: string, len?: integer): Builder
----@field wrap fun(self: Builder, left: string, right: string, fn: eval_fun_builder, hl?: hl_val): Builder
----@field when fun(self: Builder, fn: eval_fun_builder, predicate: condition_fun): Builder
----@field push_style fun(self: Builder, hl: hl_val): Builder
----@field pop_style fun(self: Builder): Builder
----@field build fun(self: Builder): string
+---@class lineforge.Builder
+---@field statusline (lineforge.eval_fun|string)[]
+---@field hl_stack lineforge.hl_val[]
+---@field ctx lineforge.EditorContext
+---@field new fun(hl?: lineforge.hl_val, ctx?: lineforge.EditorContext): lineforge.Builder
+---@field add fun(self: lineforge.Builder, fn: lineforge.eval_fun, hl?: lineforge.hl_val): lineforge.Builder
+---@field section fun(self: lineforge.Builder, hl?: lineforge.hl_val): lineforge.Builder
+---@field add_align fun(self: lineforge.Builder): lineforge.Builder
+---@field add_space fun(self: lineforge.Builder, chars?: string, len?: integer): lineforge.Builder
+---@field wrap fun(self: lineforge.Builder, left: string, right: string, fn: lineforge.eval_fun_builder, hl?: lineforge.hl_val): lineforge.Builder
+---@field when fun(self: lineforge.Builder, fn: lineforge.eval_fun_builder, predicate: lineforge.condition_fun): lineforge.Builder
+---@field push_style fun(self: lineforge.Builder, hl: lineforge.hl_val): lineforge.Builder
+---@field pop_style fun(self: lineforge.Builder): lineforge.Builder
+---@field build fun(self: lineforge.Builder): string
 
----@alias eval_fun fun():string
----@alias eval_fun_builder fun(bld: Builder)
----@alias condition_fun fun():boolean
----@alias hl_val table|function
+---@alias lineforge.eval_fun fun():string
+---@alias lineforge.eval_fun_builder fun(bld: lineforge.Builder)
+---@alias lineforge.condition_fun fun():boolean
+---@alias lineforge.hl_val table|function
 
----@param hl? hl_val
----@param ctx? EditorContext
----@return Builder
+---@param hl? lineforge.hl_val
+---@param ctx? lineforge.EditorContext
+---@return lineforge.Builder
 function Builder.new(hl, ctx)
 	local self = setmetatable({}, Builder)
 
@@ -63,8 +63,8 @@ local function resolve_dynamic_hl(hl)
 	return hl
 end
 
----@param hl? hl_val
----@return Builder
+---@param hl? lineforge.hl_val
+---@return lineforge.Builder
 function Builder:push_style(hl)
 	local hl_fn = function()
 		return highlight.eval_hl(hl)
@@ -99,7 +99,7 @@ function Builder:push_style(hl)
 	return self
 end
 
----@return Builder
+---@return lineforge.Builder
 function Builder:pop_style()
 	if #self.hl_stack > 0 then
 		table.remove(self.hl_stack, #self.hl_stack)
@@ -108,9 +108,9 @@ function Builder:pop_style()
 end
 
 ---add new eval function
----@param fn eval_fun|string
----@param hl? hl_val
----@return Builder
+---@param fn lineforge.eval_fun|string
+---@param hl? lineforge.hl_val
+---@return lineforge.Builder
 function Builder:add(fn, hl)
 	local stack_hl = nil
 	if #self.hl_stack then
