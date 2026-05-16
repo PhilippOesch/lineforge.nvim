@@ -97,6 +97,26 @@ T["segments"]["filename - expected vim api functions are called expected times"]
 			nvim_buf_get_name_called = 0,
 			fnamemodify = 0
 		}
+
+		local builder = require('lineforge.builder')
+		local filename = require('lineforge.segments.filename')
+		local b = builder.new()
+		b.ctx.get_filename = function()
+		    return 'someFileName'
+		end
+
+		filename.add(b, {hl = {fg = 'fg'}})
+		return b:build()
+	]])
+  MiniTest.expect.equality(result, '%#noBg_fg#someFileName%*')
+end
+
+T["segments"]["processed highlight"] = function()
+  local result = child.lua([[
+		local res = {
+			nvim_buf_get_name_called = 0,
+			fnamemodify = 0
+		}
 		vim.fn.fnamemodify = function()
 			res.fnamemodify = res.fnamemodify + 1
 			return ''

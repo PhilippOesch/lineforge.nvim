@@ -6,13 +6,16 @@
 ---@tag lineforge-segments-filename
 local M = {}
 
+---@class lineforge.filename.opts
+---@field hl lineforge.hl_val
+
 ---@private
 ---@param bld lineforge.Builder
----@param hl? lineforge.hl_val
-function M.add(bld, hl)
+---@param opts? lineforge.filename.opts
+function M.add(bld, opts)
   bld:add(function()
     return bld.ctx:get_filename()
-  end, hl)
+  end, opts and opts.hl)
 end
 
 return M
