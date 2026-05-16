@@ -6,9 +6,9 @@ Neovim plugin. Dependencies vendored in `deps/`.
 ## File-Scoped Commands
 | Task | Command |
 |------|---------|
-| Run all tests | `nvim --headless --noplugin -u scripts/minimal_init.lua -c "lua MiniTest.run()"` |
-| Run single test file | `nvim --headless --noplugin -u scripts/minimal_init.lua -c "lua MiniTest.run_file('path/to/test_file.lua')"` |
-| Generate docs | `nvim --headless --noplugin -u scripts/minimal_init.lua -c "luafile scripts/generate_docs.lua" -c "qa"` |
+| Run all tests | `make test` |
+| Run single test file | `make test_file FILE=path/to/test_file.lua` |
+| Generate docs | `make gen_docs` |
 
 
 ## Key Conventions
