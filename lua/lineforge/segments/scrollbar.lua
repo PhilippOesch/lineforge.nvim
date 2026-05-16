@@ -2,8 +2,8 @@ local M = {}
 
 local scroll_bar = { " ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" }
 
----@param bld Builder
----@param hl? hl_val
+---@param bld lineforge.Builder
+---@param hl? lineforge.hl_val
 function M.add(bld, hl)
 	bld:add(function()
 		local curr_line = bld.ctx:get_cursor_line()

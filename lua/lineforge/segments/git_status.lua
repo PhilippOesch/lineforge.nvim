@@ -1,7 +1,7 @@
 local M = {}
 
----@param bld Builder
----@param hl? hl_val
+---@param bld lineforge.Builder
+---@param hl? lineforge.hl_val
 function M.add(bld, hl)
 	bld:when(function(bld)
 		bld:push_style(hl or { fg = bld.ctx:get_highlight("Constant").fg })

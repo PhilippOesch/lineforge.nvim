@@ -1,4 +1,4 @@
----@class EditorContext
+---@class lineforge.EditorContext
 ---@field get_mode fun(): string
 ---@field get_git_branch fun(): string?
 ---@field get_git_status fun(): {head?: string, added?: integer, removed?: integer, changed?: integer}?
@@ -12,7 +12,7 @@
 
 local M = {}
 
----@return EditorContext
+---@return lineforge.EditorContext
 function M.default()
 	local highlight = require("lineforge.highlight")
 	local web_icons_available, web_icons = pcall(require, "nvim-web-devicons")

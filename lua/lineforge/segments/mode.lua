@@ -53,8 +53,8 @@ local mode_colors = {
 
 local M = {}
 
----@param bld Builder
----@param hl? hl_val
+---@param bld lineforge.Builder
+---@param hl? lineforge.hl_val
 function M.add(bld)
 	bld:add(function()
 		return "%(" .. mode_names[bld.ctx:get_mode()] .. "%)"

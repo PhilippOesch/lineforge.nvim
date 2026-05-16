@@ -30,7 +30,7 @@ Builder.__index = Builder
 function Builder.new(hl, ctx)
 	local self = setmetatable({}, Builder)
 
-	---@type eval_fun[]
+	---@type lineforge.eval_fun[]
 	self.statusline = {}
 	self.hl_stack = {}
 	if hl then
@@ -145,9 +145,9 @@ function Builder:add(fn, hl)
 end
 
 ---add new eval function
----@param fn eval_fun_builder
----@param hl? hl_val
----@return Builder
+---@param fn lineforge.eval_fun_builder
+---@param hl? lineforge.hl_val
+---@return lineforge.Builder
 function Builder:section(fn, hl)
 	if #self.statusline > 0 then
 		self:add_align()
@@ -162,9 +162,9 @@ function Builder:section(fn, hl)
 	return self
 end
 
----@param fn eval_fun_builder
----@param predicate condition_fun
----@return Builder
+---@param fn lineforge.eval_fun_builder
+---@param predicate lineforge.condition_fun
+---@return lineforge.Builder
 function Builder:when(fn, predicate)
 	local conditional_builder = Builder.new((#self.hl_stack > 0 and self.hl_stack[#self.hl_stack]) or nil, self.ctx)
 	fn(conditional_builder)
@@ -177,7 +177,7 @@ function Builder:when(fn, predicate)
 	return self
 end
 
----@return Builder
+---@return lineforge.Builder
 function Builder:add_align()
 	self:add("%=")
 	return self
@@ -186,7 +186,7 @@ end
 ---comment
 ---@param chars? string
 ---@param len? integer
----@return Builder
+---@return lineforge.Builder
 function Builder:add_space(chars, len)
 	self:add(string.rep(chars or " ", len or 1))
 	return self
@@ -194,9 +194,9 @@ end
 
 ---@param left string
 ---@param right string
----@param fn eval_fun_builder
+---@param fn lineforge.eval_fun_builder
 ---@param hl? string
----@return Builder
+---@return lineforge.Builder
 function Builder:wrap(left, right, fn, hl)
 	if hl then
 		self:add(function()
