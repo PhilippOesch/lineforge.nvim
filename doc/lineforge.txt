@@ -76,6 +76,12 @@ Return ~
 
 ==============================================================================
 ------------------------------------------------------------------------------
+                                                                       *Builder*
+                                   `Builder`
+Type ~
+`(lineforge.Builder)`
+
+------------------------------------------------------------------------------
                                                              *lineforge.Builder*
 Statusline builder
 
@@ -95,7 +101,7 @@ Fields ~
 {hl_stack} `(lineforge.hl_val[])`
 {ctx} `(lineforge.EditorContext)`
 {new} `(fun(hl?: lineforge.hl_val, ctx?: lineforge.EditorContext): lineforge.Builder)`
-{add} `(fun(self: lineforge.Builder, fn: lineforge.eval_fun, hl?: lineforge.hl_val): lineforge.Builder)`
+{add} `(fun(self: lineforge.Builder, fn: (lineforge.eval_fun|string), hl?: lineforge.hl_val): lineforge.Builder)`
 {section} `(fun(self: lineforge.Builder, hl?: lineforge.hl_val): lineforge.Builder)`
 {add_align} `(fun(self: lineforge.Builder): lineforge.Builder)`
 {add_space} `(fun(self: lineforge.Builder, chars?: string, len?: integer): lineforge.Builder)`

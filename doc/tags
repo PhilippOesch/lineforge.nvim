@@ -1,3 +1,4 @@
+Builder	lineforge.txt	/*Builder*
 Builder.new()	lineforge.txt	/*Builder.new()*
 Builder:add()	lineforge.txt	/*Builder:add()*
 Builder:add_align()	lineforge.txt	/*Builder:add_align()*

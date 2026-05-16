@@ -1,6 +1,7 @@
 local highlight = require("lineforge.highlight")
 local context = require("lineforge.context")
 
+---@type lineforge.Builder
 local Builder = {}
 Builder.__index = Builder
 
@@ -22,7 +23,7 @@ Builder.__index = Builder
 ---@field hl_stack lineforge.hl_val[]
 ---@field ctx lineforge.EditorContext
 ---@field new fun(hl?: lineforge.hl_val, ctx?: lineforge.EditorContext): lineforge.Builder
----@field add fun(self: lineforge.Builder, fn: lineforge.eval_fun, hl?: lineforge.hl_val): lineforge.Builder
+---@field add fun(self: lineforge.Builder, fn: (lineforge.eval_fun|string), hl?: lineforge.hl_val): lineforge.Builder
 ---@field section fun(self: lineforge.Builder, hl?: lineforge.hl_val): lineforge.Builder
 ---@field add_align fun(self: lineforge.Builder): lineforge.Builder
 ---@field add_space fun(self: lineforge.Builder, chars?: string, len?: integer): lineforge.Builder
