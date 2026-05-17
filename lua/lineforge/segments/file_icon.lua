@@ -7,11 +7,21 @@
 ---@tag lineforge-segments-file_icon
 local M = {}
 
----@private
----@param bld lineforge.Builder
----@param hl? lineforge.hl_val
-function M.add(bld)
+---@class lineforge.file_icon.opts options for file_icon segment.
+---@field ignore_filetypes? string[] filtypes to ignore for adding segment.
+
+---@param bld lineforge.Builder The builder.
+---@param opts lineforge.file_icon.opts options.
+function M.add(bld, opts)
   bld:when(function()
+    if
+      opts
+      and opts.ignore_filetypes
+      and bld.ctx:get_filetype()
+      and vim.tbl_contains(opts.ignore_filetypes, bld.ctx:get_filetype())
+    then
+      return false
+    end
     local filename = bld.ctx:get_filename()
     local extension = vim.fn.fnamemodify(filename, ":e")
     local icon, _ = bld.ctx:get_file_icon(filename, extension)
