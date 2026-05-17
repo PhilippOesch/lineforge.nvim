@@ -1,19 +1,26 @@
+---@type lineforge.segments.Filename
+local Filename = {}
+
 --- Filename segment
 ---
 --- Displays the current buffer filename (relative to the working directory).
 ---
 ---@toc_entry Filename
----@tag lineforge-segments-filename
-local M = {}
+---@tag lineforge.segments.Filename
+---@class lineforge.segments.Filename
+---@field add fun(bld: lineforge.Builder, opts?: lineforge.segments.filename.opts)
 
----@class lineforge.filename.opts
+--- options for segment add function.
+---
+---@class lineforge.segments.Filename.opts
 ---@field hl? lineforge.hl_val
 ---@field ignore_filetypes? string[]
 
----@private
+--- add segment to builder.
+---
 ---@param bld lineforge.Builder
----@param opts? lineforge.filename.opts
-function M.add(bld, opts)
+---@param opts? lineforge.segments.Filename.opts
+function Filename.add(bld, opts)
   if opts and opts.ignore_filetypes then
     bld:when(function()
       return not (bld.ctx:get_filetype() and vim.tbl_contains(opts.ignore_filetypes, bld.ctx:get_filetype()))
@@ -29,4 +36,4 @@ function M.add(bld, opts)
   end
 end
 
-return M
+return Filename

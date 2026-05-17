@@ -16,7 +16,7 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    if: github.actor != 'lineforge-github-action'
+    if: github.actor != 'lineforge-github-action[bot]'
     steps:
       - uses: actions/checkout@v4
 
@@ -38,7 +38,7 @@ jobs:
   docs:
     name: Generate documentation
     runs-on: ubuntu-latest
-    if: github.actor != 'lineforge-github-action'
+    if: github.actor != 'lineforge-github-action[bot]'
     steps:
       - name: Create GitHub App token
         id: app-token
@@ -86,7 +86,7 @@ jobs:
   stylua:
     name: Stylua lint
     runs-on: ubuntu-latest
-    if: github.actor != 'lineforge-github-action'
+    if: github.actor != 'lineforge-github-action[bot]'
     steps:
       - uses: actions/checkout@v4
       - uses: JohnnyMorganz/stylua-action@v4
