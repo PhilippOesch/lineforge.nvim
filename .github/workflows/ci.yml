@@ -48,6 +48,9 @@ jobs:
           private-key: ${{ secrets.LINEFORGE_ACTIONS_APP_PRIVATE_KEY }}
 
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }
 
       - name: Setup Neovim
         uses: muniftanjim/setup-neovim-action@v1
