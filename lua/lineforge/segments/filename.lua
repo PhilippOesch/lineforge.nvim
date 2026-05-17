@@ -1,19 +1,24 @@
+local M = {}
+
 --- Filename segment
 ---
 --- Displays the current buffer filename (relative to the working directory).
 ---
 ---@toc_entry Filename
 ---@tag lineforge-segments-filename
-local M = {}
+---@class lineforge.segments.filename
+---@field add fun(bld: lineforge.Builder, opts?: lineforge.segments.filename.opts)
 
----@class lineforge.filename.opts
+---options for segment add function.
+---
+---@class lineforge.segments.filename.opts
 ---@field hl? lineforge.hl_val
 ---@field ignore_filetypes? string[]
 
 --- add segment to builder.
 ---
 ---@param bld lineforge.Builder
----@param opts? lineforge.filename.opts
+---@param opts? lineforge.segments.filename.opts
 function M.add(bld, opts)
   if opts and opts.ignore_filetypes then
     bld:when(function()
