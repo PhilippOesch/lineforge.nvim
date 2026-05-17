@@ -9,6 +9,10 @@ Builder:push_style()	lineforge.txt	/*Builder:push_style()*
 Builder:section()	lineforge.txt	/*Builder:section()*
 Builder:when()	lineforge.txt	/*Builder:when()*
 Builder:wrap()	lineforge.txt	/*Builder:wrap()*
+FileIcon	lineforge.txt	/*FileIcon*
+FileIcon.add()	lineforge.txt	/*FileIcon.add()*
+Filename	lineforge.txt	/*Filename*
+Filename.add()	lineforge.txt	/*Filename.add()*
 M.clear_colors()	lineforge.txt	/*M.clear_colors()*
 M.default()	lineforge.txt	/*M.default()*
 M.eval_hl()	lineforge.txt	/*M.eval_hl()*
@@ -21,9 +25,7 @@ M.reset_highlights()	lineforge.txt	/*M.reset_highlights()*
 M.setup()	lineforge.txt	/*M.setup()*
 lineforge	lineforge.txt	/*lineforge*
 lineforge-segments	lineforge.txt	/*lineforge-segments*
-lineforge-segments-file_icon	lineforge.txt	/*lineforge-segments-file_icon*
 lineforge-segments-fileformat	lineforge.txt	/*lineforge-segments-fileformat*
-lineforge-segments-filename	lineforge.txt	/*lineforge-segments-filename*
 lineforge-segments-git_branch	lineforge.txt	/*lineforge-segments-git_branch*
 lineforge-segments-git_status	lineforge.txt	/*lineforge-segments-git_status*
 lineforge-segments-lsp_attached_info	lineforge.txt	/*lineforge-segments-lsp_attached_info*
@@ -32,3 +34,5 @@ lineforge-segments-ruler	lineforge.txt	/*lineforge-segments-ruler*
 lineforge-segments-scrollbar	lineforge.txt	/*lineforge-segments-scrollbar*
 lineforge.Builder	lineforge.txt	/*lineforge.Builder*
 lineforge.EditorContext	lineforge.txt	/*lineforge.EditorContext*
+lineforge.segments.FilenIcon	lineforge.txt	/*lineforge.segments.FilenIcon*
+lineforge.segments.Filename	lineforge.txt	/*lineforge.segments.Filename*

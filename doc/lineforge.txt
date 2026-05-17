@@ -24,6 +24,7 @@ This module needs a setup with `require('lineforge').setup({})`
 (replace `{}` with your config table).
 
 See |lineforge.config| for config structure and default values.
+lineforge
 
 ------------------------------------------------------------------------------
 Module config
@@ -93,6 +94,7 @@ Highlights can be:
 - A function returning a highlight table or string.
 - A string referencing an existing highlight group name.
 
+Builder
 Class ~
 {lineforge.Builder}
 Fields ~
@@ -124,13 +126,12 @@ Return ~
 ------------------------------------------------------------------------------
                                                           *Builder:push_style()*
                            `Builder:push_style`({hl})
-Parameters ~
-{hl} `(optional)` `(table|function|string)`
 Push a highlight onto the stack
 
 When a table highlight is pushed, it merges with the current stack top.
 When a function is pushed, it lazily evaluates and merges on use.
 
+Parameters ~
 {hl} `(table|function|string)` Highlight value to push.
 Return ~
 `(lineforge.Builder)`
@@ -245,6 +246,7 @@ Editor context
 A context is a table of functions that provide editor state to segments.
 You can override any field via `setup({ context = { ... } })`.
 
+EditorContext
 Class ~
 {lineforge.EditorContext}
 Fields ~
@@ -362,100 +364,160 @@ Available segments:
 
 ==============================================================================
 ------------------------------------------------------------------------------
-                                                       *lineforge-segments-mode*
-Mode segment
-
-Displays the current Vim mode abbreviation (e.g. `N`, `I`, `V`).
-Automatically colors the text using the mode's associated highlight group.
-
-
-==============================================================================
-------------------------------------------------------------------------------
-                                                   *lineforge-segments-filename*
-Filename segment
-
-Displays the current buffer filename (relative to the working directory).
+                                                                      *FileIcon*
+                                   `FileIcon`
+Type ~
+`(lineforge.segments.Filename)`
 
 ------------------------------------------------------------------------------
-Class ~
-{lineforge.filename.opts}
-Fields ~
-{hl} `(optional)` `(table|function|string)`
-{ignore_filetypes} `(optional)` `(string[])`
-
-
-==============================================================================
-------------------------------------------------------------------------------
-                                                  *lineforge-segments-file_icon*
+                                                  *lineforge.segments.FilenIcon*
 File icon segment
 
 Displays an icon for the current filetype. Requires `nvim-web-devicons`.
 The icon is colored using the color provided by the icon library.
 
+FileIcon
+Class ~
+{lineforge.segments.FileIcon}
+Fields ~
+{add} `(fun(bld: lineforge.Builder, opts?: lineforge.segments.FilenIcon.opts))`
+
 ------------------------------------------------------------------------------
 Class ~
-{lineforge.file_icon.opts} options for file_icon segment.
+{lineforge.segments.FilenIcon.opts} options for file_icon segment.
 Fields ~
 {ignore_filetypes} `(optional)` `(string[])` filtypes to ignore for adding segment.
 
 ------------------------------------------------------------------------------
+                                                                *FileIcon.add()*
+                         `FileIcon.add`({bld}, {opts})
+add segment to builder.
+
 Parameters ~
 {bld} `(lineforge.Builder)` The builder.
-{opts} `(lineforge.file_icon.opts)` options.
+{opts} `(lineforge.segments.FilenIcon.opts)` options.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                 *lineforge-segments-fileformat*
+                                      `M`
+Fileformat segment
+
+Displays the current file format (`unix`, `dos`, `mac`) prefixed
+with a format icon. Hidden when the format is unavailable.
+
+Fileformat
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                      *Filename*
+                                   `Filename`
+Type ~
+`(lineforge.segments.Filename)`
+
+------------------------------------------------------------------------------
+                                                   *lineforge.segments.Filename*
+Filename segment
+
+Displays the current buffer filename (relative to the working directory).
+
+Filename
+Class ~
+{lineforge.segments.Filename}
+Fields ~
+{add} `(fun(bld: lineforge.Builder, opts?: lineforge.segments.filename.opts))`
+
+------------------------------------------------------------------------------
+options for segment add function.
+
+Class ~
+{lineforge.segments.Filename.opts}
+Fields ~
+{hl} `(optional)` `(table|function|string)`
+{ignore_filetypes} `(optional)` `(string[])`
+
+------------------------------------------------------------------------------
+                                                                *Filename.add()*
+                         `Filename.add`({bld}, {opts})
+add segment to builder.
+
+Parameters ~
+{bld} `(lineforge.Builder)`
+{opts} `(optional)` `(lineforge.segments.Filename.opts)`
 
 
 ==============================================================================
 ------------------------------------------------------------------------------
                                                  *lineforge-segments-git_branch*
+                                      `M`
 Git branch segment
 
 Displays the current Git branch name prefixed with a branch icon.
 Hidden when not in a Git repository. Uses `gitsigns.nvim` data if available.
 
+Git branch
+
 
 ==============================================================================
 ------------------------------------------------------------------------------
                                                  *lineforge-segments-git_status*
+                                      `M`
 Git status segment
 
 Displays a summary of Git diff stats: added (`+n`), removed (`-n`),
 and changed (`~n`). Hidden when there are no changes or outside a Git
 repository. Uses `gitsigns.nvim` data if available.
 
-
-==============================================================================
-------------------------------------------------------------------------------
-                                                 *lineforge-segments-fileformat*
-Fileformat segment
-
-Displays the current file format (`unix`, `dos`, `mac`) prefixed
-with a format icon. Hidden when the format is unavailable.
+Git status
 
 
 ==============================================================================
 ------------------------------------------------------------------------------
                                           *lineforge-segments-lsp_attached_info*
+                                      `M`
 LSP attached info segment
 
 Displays the names of LSP clients attached to the current buffer,
 prefixed with an LSP icon. Hidden when no LSP clients are attached.
 
+LSP attached info
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                       *lineforge-segments-mode*
+                                      `M`
+Mode segment
+
+Displays the current Vim mode abbreviation (e.g. `N`, `I`, `V`).
+Automatically colors the text using the mode's associated highlight group.
+
+Mode
+
 
 ==============================================================================
 ------------------------------------------------------------------------------
                                                       *lineforge-segments-ruler*
+                                      `M`
 Ruler segment
 
 Displays the current cursor position in the form `line/total:col percent`.
+
+Ruler
 
 
 ==============================================================================
 ------------------------------------------------------------------------------
                                                   *lineforge-segments-scrollbar*
+                                      `M`
 Scrollbar segment
 
 Displays a visual scrollbar indicator using Unicode block characters.
 The indicator changes based on the current cursor position in the buffer.
+
+Scrollbar
 
 
  vim:tw=78:ts=8:noet:ft=help:norl:
