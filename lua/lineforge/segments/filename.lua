@@ -6,11 +6,11 @@ local Filename = {}
 --- Displays the current buffer filename (relative to the working directory).
 ---
 ---@toc_entry Filename
----@tag lineforge.segments.filename
+---@tag lineforge.segments.Filename
 ---@class lineforge.segments.Filename
 ---@field add fun(bld: lineforge.Builder, opts?: lineforge.segments.filename.opts)
 
----options for segment add function.
+--- options for segment add function.
 ---
 ---@class lineforge.segments.Filename.opts
 ---@field hl? lineforge.hl_val
