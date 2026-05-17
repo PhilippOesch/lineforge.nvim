@@ -91,6 +91,54 @@ T["segments"]["file_icon - should not be processed when web_icons not available"
   MiniTest.expect.equality(result, "")
 end
 
+T["segments"]["file_icon - should not add icon if filetype is ignored"] = function()
+  local result = child.lua([[
+		package.loaded['nvim-web-devicons'] = {
+			get_icon_color = function(name)
+				return 'icon', 'iconcolor'
+			end,
+		}
+
+		local builder = require('lineforge.builder')
+		local file_icon = require('lineforge.segments.file_icon')
+		local b = builder.new()
+		b.ctx.get_filetype = function()
+		    return 'ignored'
+		end
+		b.ctx.get_filename = function()
+		    return 'someFileName'
+		end
+		file_icon.add(b, {ignore_filetypes = {'ignored'}})
+
+		return b:build()
+	]])
+  MiniTest.expect.equality(result, "")
+end
+
+T["segments"]["file_icon - should add icon if filetype is not ignored"] = function()
+  local result = child.lua([[
+		package.loaded['nvim-web-devicons'] = {
+			get_icon_color = function(name)
+				return 'icon', 'iconcolor'
+			end,
+		}
+
+		local builder = require('lineforge.builder')
+		local file_icon = require('lineforge.segments.file_icon')
+		local b = builder.new()
+		b.ctx.get_filetype = function()
+		    return 'not_ignored'
+		end
+		b.ctx.get_filename = function()
+		    return 'someFileName'
+		end
+		file_icon.add(b, {ignore_filetypes = {'ignored'}})
+
+		return b:build()
+	]])
+  MiniTest.expect.equality(result, "%#noBg_iconcolor#icon%*")
+end
+
 T["segments"]["filename - expected vim api functions are called expected times"] = function()
   local result = child.lua([[
 		local builder = require('lineforge.builder')
