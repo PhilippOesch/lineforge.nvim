@@ -16,6 +16,7 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    if: github.actor != 'lineforge-github-action'
     steps:
       - uses: actions/checkout@v4
 
@@ -37,8 +38,19 @@ jobs:
   docs:
     name: Generate documentation
     runs-on: ubuntu-latest
+    if: github.actor != 'lineforge-github-action'
     steps:
+      - name: Create GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.LINEFORGE_ACTIONS_APP_ID }}
+          private-key: ${{ secrets.LINEFORGE_ACTIONS_APP_PRIVATE_KEY }}
+
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Setup Neovim
         uses: muniftanjim/setup-neovim-action@v1
@@ -64,8 +76,8 @@ jobs:
             [docgen] Update docs
             skip-checks: true
         run: |
-          git config user.email "actions@github"
-          git config user.name "Github Actions"
+          git config user.name "lineforge-github-action"
+          git config user.email "lineforge-github-action@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           git add README.md doc
           # Only commit and push if we have changes
@@ -74,6 +86,7 @@ jobs:
   stylua:
     name: Stylua lint
     runs-on: ubuntu-latest
+    if: github.actor != 'lineforge-github-action'
     steps:
       - uses: actions/checkout@v4
       - uses: JohnnyMorganz/stylua-action@v4
