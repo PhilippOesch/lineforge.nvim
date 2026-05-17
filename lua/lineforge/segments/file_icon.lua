@@ -1,20 +1,25 @@
+---@type lineforge.segments.Filename
+local FileIcon = {}
+
 --- File icon segment
 ---
 --- Displays an icon for the current filetype. Requires `nvim-web-devicons`.
 --- The icon is colored using the color provided by the icon library.
 ---
----@toc_entry File icon
----@tag lineforge-segments-file_icon
-local M = {}
+---@toc_entry FileIcon
+---@tag lineforge.segments.FilenIcon
+---@class lineforge.segments.FileIcon
+---@field add fun(bld: lineforge.Builder, opts?: lineforge.segments.FilenIcon.opts)
 
----@class lineforge.file_icon.opts options for file_icon segment.
+
+---@class lineforge.segments.FilenIcon.opts options for file_icon segment.
 ---@field ignore_filetypes? string[] filtypes to ignore for adding segment.
 
 --- add segment to builder.
 ---
 ---@param bld lineforge.Builder The builder.
----@param opts lineforge.file_icon.opts options.
-function M.add(bld, opts)
+---@param opts lineforge.segments.FilenIcon.opts options.
+function FileIcon.add(bld, opts)
   bld:when(function()
     if
       opts
@@ -43,4 +48,4 @@ function M.add(bld, opts)
   end)
 end
 
-return M
+return FileIcon
