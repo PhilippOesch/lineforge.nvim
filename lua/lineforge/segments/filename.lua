@@ -5,7 +5,7 @@ local M = {}
 --- Displays the current buffer filename (relative to the working directory).
 ---
 ---@toc_entry Filename
----@tag lineforge-segments-filename
+---@tag lineforge.segments.filename
 ---@class lineforge.segments.filename
 ---@field add fun(bld: lineforge.Builder, opts?: lineforge.segments.filename.opts)
 
