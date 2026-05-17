@@ -392,6 +392,17 @@ File icon segment
 Displays an icon for the current filetype. Requires `nvim-web-devicons`.
 The icon is colored using the color provided by the icon library.
 
+------------------------------------------------------------------------------
+Class ~
+{lineforge.file_icon.opts} options for file_icon segment.
+Fields ~
+{ignore_filetypes} `(optional)` `(string[])` filtypes to ignore for adding segment.
+
+------------------------------------------------------------------------------
+Parameters ~
+{bld} `(lineforge.Builder)` The builder.
+{opts} `(lineforge.file_icon.opts)` options.
+
 
 ==============================================================================
 ------------------------------------------------------------------------------
