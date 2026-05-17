@@ -10,7 +10,8 @@ local M = {}
 ---@field hl? lineforge.hl_val
 ---@field ignore_filetypes? string[]
 
----@private
+--- add segment to builder.
+---
 ---@param bld lineforge.Builder
 ---@param opts? lineforge.filename.opts
 function M.add(bld, opts)

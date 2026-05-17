@@ -10,6 +10,8 @@ local M = {}
 ---@class lineforge.file_icon.opts options for file_icon segment.
 ---@field ignore_filetypes? string[] filtypes to ignore for adding segment.
 
+--- add segment to builder.
+---
 ---@param bld lineforge.Builder The builder.
 ---@param opts lineforge.file_icon.opts options.
 function M.add(bld, opts)

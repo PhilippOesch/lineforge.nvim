@@ -79,7 +79,6 @@ local function resolve_dynamic_hl(hl)
   return hl
 end
 
----@param hl? lineforge.hl_val
 --- Push a highlight onto the stack
 ---
 --- When a table highlight is pushed, it merges with the current stack top.
