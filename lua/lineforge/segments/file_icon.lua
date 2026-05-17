@@ -11,7 +11,6 @@ local FileIcon = {}
 ---@class lineforge.segments.FileIcon
 ---@field add fun(bld: lineforge.Builder, opts?: lineforge.segments.FilenIcon.opts)
 
-
 ---@class lineforge.segments.FilenIcon.opts options for file_icon segment.
 ---@field ignore_filetypes? string[] filtypes to ignore for adding segment.
 
