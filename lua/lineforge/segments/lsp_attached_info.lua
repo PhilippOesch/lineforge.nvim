@@ -7,18 +7,23 @@
 ---@tag lineforge-segments-lsp_attached_info
 local M = {}
 
+--- options for segment add function.
+---
+---@class lineforge.segments.LspAttachedInfo.opts
+---@field hl? lineforge.hl_val
+
 ---@private
 ---@param bld lineforge.Builder
----@param hl? lineforge.hl_val
-function M.add(bld, hl)
-  bld:when(function()
-    return #bld.ctx:get_lsp_client_names() > 0
-  end, function(bld)
-    bld:add(function()
-      local names = bld.ctx:get_lsp_client_names()
-      return "󰣖 " .. table.concat(names, ",") .. ""
-    end, hl)
-  end)
+---@param opts? lineforge.segments.LspAttachedInfo.opts
+function M.add(bld, opts)
+	bld:when(function()
+		return #bld.ctx:get_lsp_client_names() > 0
+	end, function(bld)
+		bld:add(function()
+			local names = bld.ctx:get_lsp_client_names()
+			return "󰣖 " .. table.concat(names, ",") .. ""
+		end, require("lineforge.utils").resolve_opts_hl(opts))
+	end)
 end
 
 return M

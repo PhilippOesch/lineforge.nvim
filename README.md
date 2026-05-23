@@ -87,17 +87,32 @@ The default context is available at `lineforge.context.default()`.
 
 ### Available Segments
 
-| Segment | Description |
-|---------|-------------|
-| `mode` | Current vim mode (N, I, V, etc.) |
-| `filename` | Current buffer filename |
-| `file_icon` | File icon (requires nvim-web-devicons) |
-| `git_branch` | Git branch name |
-| `git_status` | Git status (added/removed/changed) |
-| `lsp_attached_info` | Attached LSP client names |
-| `fileformat` | File format (unix, dos, mac) |
-| `ruler` | Line/column position |
-| `scrollbar` | Visual scrollbar indicator |
+Every segment accepts an optional `opts` table:
+
+```lua
+segments.filename.add(builder, { hl = { fg = "#FF0000" }, max_width = 20 })
+```
+
+| Segment | Description | Options |
+|---------|-------------|---------|
+| `mode` | Current vim mode (N, I, V, etc.) | `hl` |
+| `filename` | Current buffer filename | `hl`, `ignore_filetypes`, `max_width` |
+| `file_icon` | File icon (requires nvim-web-devicons) | `hl`, `ignore_filetypes` |
+| `git_branch` | Git branch name | `hl`, `max_width` |
+| `git_status` | Git status (added/removed/changed) | `hl` |
+| `lsp_attached_info` | Attached LSP client names | `hl` |
+| `fileformat` | File format (unix, dos, mac) | `hl` |
+| `ruler` | Line/column position | `hl` |
+| `scrollbar` | Visual scrollbar indicator | `hl` |
+
+#### Truncation
+
+`filename` and `git_branch` support `max_width` to prevent overly long segments:
+
+- `filename` truncates from the **middle** (`…/file.lua`).
+- `git_branch` truncates from the **tail** (`feature/very-…`).
+
+When the remaining space is too small for meaningful truncation, an ellipsis (`…`) is shown.
 
 ### Builder API
 
