@@ -190,6 +190,36 @@ T["segments"]["filename - should add filename if filetype is not ignored"] = fun
   MiniTest.expect.equality(result, "someFileName")
 end
 
+T["segments"]["filename - truncates from middle when max_width exceeded"] = function()
+  local result = child.lua([[
+		local builder = require('lineforge.builder')
+		local filename = require('lineforge.segments.filename')
+		local b = builder.new()
+		b.ctx.get_filename = function()
+		    return 'very/long/path/to/file.lua'
+		end
+
+		filename.add(b, {max_width = 20})
+		return b:build()
+	]])
+  MiniTest.expect.equality(result, "very/long…o/file.lua")
+end
+
+T["segments"]["filename - does not truncate when within max_width"] = function()
+  local result = child.lua([[
+		local builder = require('lineforge.builder')
+		local filename = require('lineforge.segments.filename')
+		local b = builder.new()
+		b.ctx.get_filename = function()
+		    return 'short.lua'
+		end
+
+		filename.add(b, {max_width = 20})
+		return b:build()
+	]])
+  MiniTest.expect.equality(result, "short.lua")
+end
+
 T["segments"]["processed highlight"] = function()
   local result = child.lua([[
 		local res = {
@@ -362,6 +392,36 @@ T["segments"]["git_branch - hl is processed"] = function()
 		return b:build()
 	]])
   MiniTest.expect.equality(result, "%#noBg_fg# branch%*")
+end
+
+T["segments"]["git_branch - truncates from tail when max_width exceeded"] = function()
+  local result = child.lua([[
+		vim.b.gitsigns_status_dict = {
+			head = 'very-long-branch-name'
+		}
+
+		local builder = require('lineforge.builder')
+		local git_branch = require('lineforge.segments.git_branch')
+		local b = builder.new()
+		git_branch.add(b, {max_width = 15})
+		return b:build()
+	]])
+  MiniTest.expect.equality(result, " very-long-br…")
+end
+
+T["segments"]["git_branch - does not truncate when within max_width"] = function()
+  local result = child.lua([[
+		vim.b.gitsigns_status_dict = {
+			head = 'main'
+		}
+
+		local builder = require('lineforge.builder')
+		local git_branch = require('lineforge.segments.git_branch')
+		local b = builder.new()
+		git_branch.add(b, {max_width = 15})
+		return b:build()
+	]])
+  MiniTest.expect.equality(result, " main")
 end
 
 T["segments"]["lsp_attached_info - doesn't show anything if no lsp attached"] = function()

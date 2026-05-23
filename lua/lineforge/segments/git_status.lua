@@ -8,15 +8,20 @@
 ---@tag lineforge-segments-git_status
 local M = {}
 
+--- options for segment add function.
+---
+---@class lineforge.segments.GitStatus.opts
+---@field hl? lineforge.hl_val
+
 ---@private
 ---@param bld lineforge.Builder
----@param hl? lineforge.hl_val
-function M.add(bld, hl)
+---@param opts? lineforge.segments.GitStatus.opts
+function M.add(bld, opts)
   bld:when(function()
     return bld.ctx:get_git_status() ~= nil
   end, function(bld)
     bld
-      :push_style(hl or { fg = bld.ctx:get_highlight("Constant").fg })
+      :push_style(require("lineforge.utils").resolve_opts_hl(opts) or { fg = bld.ctx:get_highlight("Constant").fg })
       :add("(")
       :when(function()
         local status = bld.ctx:get_git_status()
