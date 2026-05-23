@@ -344,6 +344,68 @@ Return ~
 
 ==============================================================================
 ------------------------------------------------------------------------------
+                                                               *lineforge.utils*
+                                      `M`
+Utility functions for LineForge
+
+Helper functions used across segments for display-width aware
+string manipulation.
+
+------------------------------------------------------------------------------
+                                                           *M.strdisplaywidth()*
+                           `M.strdisplaywidth`({str})
+Return the display width of a string.
+
+Parameters ~
+{str} `(string)`
+Return ~
+`(integer)`
+
+------------------------------------------------------------------------------
+                                                             *M.truncate_tail()*
+                     `M.truncate_tail`({str}, {max_width})
+Truncate a string from the tail, preserving the start.
+
+If the string fits within `max_width`, it is returned unchanged.
+Otherwise characters are removed from the end and replaced with `…`.
+
+Parameters ~
+{str} `(string)`
+{max_width} `(integer)`
+Return ~
+`(string)`
+
+------------------------------------------------------------------------------
+                                                           *M.truncate_middle()*
+                    `M.truncate_middle`({str}, {max_width})
+Truncate a string from the middle, preserving both ends.
+
+If the string fits within `max_width`, it is returned unchanged.
+Otherwise characters are removed from the middle and replaced with `…`.
+
+Parameters ~
+{str} `(string)`
+{max_width} `(integer)`
+Return ~
+`(string)`
+
+------------------------------------------------------------------------------
+                                                           *M.resolve_opts_hl()*
+                          `M.resolve_opts_hl`({opts})
+Extract the highlight from an opts table, with backward compatibility.
+
+If `opts.hl` exists, it is returned. Otherwise, if the table looks like
+a plain highlight value (contains `fg`, `bg`, etc. and no segment
+options like `max_width`), the table itself is returned as the highlight.
+
+Parameters ~
+{opts} `(table|nil)`
+Return ~
+`((table|function|string)|nil)`
+
+
+==============================================================================
+------------------------------------------------------------------------------
                                                             *lineforge-segments*
 Built-in segments
 
@@ -409,6 +471,14 @@ with a format icon. Hidden when the format is unavailable.
 
 Fileformat
 
+------------------------------------------------------------------------------
+options for segment add function.
+
+Class ~
+{lineforge.segments.Fileformat.opts}
+Fields ~
+{hl} `(optional)` `(table|function|string)`
+
 
 ==============================================================================
 ------------------------------------------------------------------------------
@@ -422,12 +492,13 @@ Type ~
 Filename segment
 
 Displays the current buffer filename (relative to the working directory).
+Optionally truncates from the middle when `opts.max_width` is set.
 
 Filename
 Class ~
 {lineforge.segments.Filename}
 Fields ~
-{add} `(fun(bld: lineforge.Builder, opts?: lineforge.segments.filename.opts))`
+{add} `(fun(bld: lineforge.Builder, opts?: lineforge.segments.Filename.opts))`
 
 ------------------------------------------------------------------------------
 options for segment add function.
@@ -437,6 +508,7 @@ Class ~
 Fields ~
 {hl} `(optional)` `(table|function|string)`
 {ignore_filetypes} `(optional)` `(string[])`
+{max_width} `(optional)` `(integer)` maximum display width; truncates from the middle if exceeded
 
 ------------------------------------------------------------------------------
                                                                 *Filename.add()*
@@ -456,8 +528,18 @@ Git branch segment
 
 Displays the current Git branch name prefixed with a branch icon.
 Hidden when not in a Git repository. Uses `gitsigns.nvim` data if available.
+Optionally truncates from the tail when `opts.max_width` is set.
 
 Git branch
+
+------------------------------------------------------------------------------
+options for segment add function.
+
+Class ~
+{lineforge.segments.GitBranch.opts}
+Fields ~
+{hl} `(optional)` `(table|function|string)`
+{max_width} `(optional)` `(integer)` maximum display width; truncates from the tail if exceeded
 
 
 ==============================================================================
@@ -472,6 +554,14 @@ repository. Uses `gitsigns.nvim` data if available.
 
 Git status
 
+------------------------------------------------------------------------------
+options for segment add function.
+
+Class ~
+{lineforge.segments.GitStatus.opts}
+Fields ~
+{hl} `(optional)` `(table|function|string)`
+
 
 ==============================================================================
 ------------------------------------------------------------------------------
@@ -483,6 +573,14 @@ Displays the names of LSP clients attached to the current buffer,
 prefixed with an LSP icon. Hidden when no LSP clients are attached.
 
 LSP attached info
+
+------------------------------------------------------------------------------
+options for segment add function.
+
+Class ~
+{lineforge.segments.LspAttachedInfo.opts}
+Fields ~
+{hl} `(optional)` `(table|function|string)`
 
 
 ==============================================================================
@@ -507,6 +605,14 @@ Displays the current cursor position in the form `line/total:col percent`.
 
 Ruler
 
+------------------------------------------------------------------------------
+options for segment add function.
+
+Class ~
+{lineforge.segments.Ruler.opts}
+Fields ~
+{hl} `(optional)` `(table|function|string)`
+
 
 ==============================================================================
 ------------------------------------------------------------------------------
@@ -518,6 +624,14 @@ Displays a visual scrollbar indicator using Unicode block characters.
 The indicator changes based on the current cursor position in the buffer.
 
 Scrollbar
+
+------------------------------------------------------------------------------
+options for segment add function.
+
+Class ~
+{lineforge.segments.Scrollbar.opts}
+Fields ~
+{hl} `(optional)` `(table|function|string)`
 
 
  vim:tw=78:ts=8:noet:ft=help:norl:

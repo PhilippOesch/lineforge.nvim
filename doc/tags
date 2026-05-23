@@ -22,7 +22,11 @@ M.get_highlights()	lineforge.txt	/*M.get_highlights()*
 M.get_loaded_colors()	lineforge.txt	/*M.get_loaded_colors()*
 M.load_colors()	lineforge.txt	/*M.load_colors()*
 M.reset_highlights()	lineforge.txt	/*M.reset_highlights()*
+M.resolve_opts_hl()	lineforge.txt	/*M.resolve_opts_hl()*
 M.setup()	lineforge.txt	/*M.setup()*
+M.strdisplaywidth()	lineforge.txt	/*M.strdisplaywidth()*
+M.truncate_middle()	lineforge.txt	/*M.truncate_middle()*
+M.truncate_tail()	lineforge.txt	/*M.truncate_tail()*
 lineforge	lineforge.txt	/*lineforge*
 lineforge-segments	lineforge.txt	/*lineforge-segments*
 lineforge-segments-fileformat	lineforge.txt	/*lineforge-segments-fileformat*
@@ -36,3 +40,4 @@ lineforge.Builder	lineforge.txt	/*lineforge.Builder*
 lineforge.EditorContext	lineforge.txt	/*lineforge.EditorContext*
 lineforge.segments.FilenIcon	lineforge.txt	/*lineforge.segments.FilenIcon*
 lineforge.segments.Filename	lineforge.txt	/*lineforge.segments.Filename*
+lineforge.utils	lineforge.txt	/*lineforge.utils*
