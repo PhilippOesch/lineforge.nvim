@@ -16,14 +16,14 @@ local M = {}
 ---@param bld lineforge.Builder
 ---@param opts? lineforge.segments.Fileformat.opts
 function M.add(bld, opts)
-	bld:when(function()
-		return bld.ctx:get_fileformat() ~= nil
-	end, function(bld)
-		bld:add(function()
-			local fmt = bld.ctx:get_fileformat()
-			return " " .. fmt
-		end, require("lineforge.utils").resolve_opts_hl(opts))
-	end)
+  bld:when(function()
+    return bld.ctx:get_fileformat() ~= nil
+  end, function(bld)
+    bld:add(function()
+      local fmt = bld.ctx:get_fileformat()
+      return " " .. fmt
+    end, require("lineforge.utils").resolve_opts_hl(opts))
+  end)
 end
 
 return M

@@ -15,9 +15,9 @@ local M = {}
 ---@param bld lineforge.Builder
 ---@param opts? lineforge.segments.Ruler.opts
 function M.add(bld, opts)
-	bld:add(function()
-		return "%7(%l/%3L%):%2c %P"
-	end, require("lineforge.utils").resolve_opts_hl(opts))
+  bld:add(function()
+    return "%7(%l/%3L%):%2c %P"
+  end, require("lineforge.utils").resolve_opts_hl(opts))
 end
 
 return M

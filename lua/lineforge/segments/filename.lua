@@ -23,24 +23,24 @@ local Filename = {}
 ---@param bld lineforge.Builder
 ---@param opts? lineforge.segments.Filename.opts
 function Filename.add(bld, opts)
-	local function get_text()
-		local text = bld.ctx:get_filename()
-		if opts and opts.max_width then
-			local utils = require("lineforge.utils")
-			return utils.truncate_middle(text, opts.max_width)
-		end
-		return text
-	end
+  local function get_text()
+    local text = bld.ctx:get_filename()
+    if opts and opts.max_width then
+      local utils = require("lineforge.utils")
+      return utils.truncate_middle(text, opts.max_width)
+    end
+    return text
+  end
 
-	if opts and opts.ignore_filetypes then
-		bld:when(function()
-			return not (bld.ctx:get_filetype() and vim.tbl_contains(opts.ignore_filetypes, bld.ctx:get_filetype()))
-		end, function(bld)
-			bld:add(get_text, require("lineforge.utils").resolve_opts_hl(opts))
-		end)
-	else
-		bld:add(get_text, require("lineforge.utils").resolve_opts_hl(opts))
-	end
+  if opts and opts.ignore_filetypes then
+    bld:when(function()
+      return not (bld.ctx:get_filetype() and vim.tbl_contains(opts.ignore_filetypes, bld.ctx:get_filetype()))
+    end, function(bld)
+      bld:add(get_text, require("lineforge.utils").resolve_opts_hl(opts))
+    end)
+  else
+    bld:add(get_text, require("lineforge.utils").resolve_opts_hl(opts))
+  end
 end
 
 return Filename

@@ -16,14 +16,14 @@ local M = {}
 ---@param bld lineforge.Builder
 ---@param opts? lineforge.segments.LspAttachedInfo.opts
 function M.add(bld, opts)
-	bld:when(function()
-		return #bld.ctx:get_lsp_client_names() > 0
-	end, function(bld)
-		bld:add(function()
-			local names = bld.ctx:get_lsp_client_names()
-			return "󰣖 " .. table.concat(names, ",") .. ""
-		end, require("lineforge.utils").resolve_opts_hl(opts))
-	end)
+  bld:when(function()
+    return #bld.ctx:get_lsp_client_names() > 0
+  end, function(bld)
+    bld:add(function()
+      local names = bld.ctx:get_lsp_client_names()
+      return "󰣖 " .. table.concat(names, ",") .. ""
+    end, require("lineforge.utils").resolve_opts_hl(opts))
+  end)
 end
 
 return M
